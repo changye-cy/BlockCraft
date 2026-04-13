@@ -192,8 +192,8 @@ const BlockCraft = () => {
   
   return (
     <div className="flex flex-col h-screen bg-primary text-primary relative overflow-hidden">
-      {/* 算法艺术背景 */}
-      <AlgorithmicBackground />
+      {/* 算法艺术背景 (Temporarily Disabled) */}
+      {/* <AlgorithmicBackground /> */}
       
       {/* 顶部状态栏 */}
       <div className="h-10 bg-secondary/80 backdrop-blur-sm flex items-center px-4 text-sm z-10 overflow-x-auto">
