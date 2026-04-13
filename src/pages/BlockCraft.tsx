@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, Box, Sphere, Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 import { Hands, Landmark } from '@mediapipe/hands';
@@ -21,55 +21,77 @@ const BlockCraft = () => {
   const [color, setColor] = useState('#3b82f6');
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [handLandmarks, setHandLandmarks] = useState<Landmark[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hands = useRef<Hands | null>(null);
   
   // 初始化MediaPipe Hands
   useEffect(() => {
     const initHands = async () => {
-      const { Hands } = await import('@mediapipe/hands');
-      
-      hands.current = new Hands({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
-      });
-      
-      hands.current.setOptions({
-        maxNumHands: 1,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-      
-      hands.current.onResults((results) => {
-        if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
-          setHandLandmarks(results.multiHandLandmarks[0]);
+      try {
+        console.log('Initializing BlockCraft...');
+        
+        // 模拟加载时间
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+        
+        const { Hands } = await import('@mediapipe/hands');
+        
+        hands.current = new Hands({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+        });
+        
+        hands.current.setOptions({
+          maxNumHands: 1,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+        
+        hands.current.onResults((results) => {
+          if (results.multiHandLandmarks && results.multiHandLandmarks[0]) {
+            setHandLandmarks(results.multiHandLandmarks[0]);
+          } else {
+            setHandLandmarks([]);
+          }
+        });
+        
+        if (videoRef.current && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          // 使用navigator.mediaDevices获取摄像头
+          navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+              if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                videoRef.current.play();
+                setIsCameraActive(true);
+                
+                // 手动处理帧
+                const processFrame = async () => {
+                  if (hands.current && videoRef.current && !videoRef.current.paused && !videoRef.current.ended) {
+                    try {
+                      await hands.current.send({ image: videoRef.current });
+                    } catch (err) {
+                      console.error('Error processing frame:', err);
+                    }
+                  }
+                  requestAnimationFrame(processFrame);
+                };
+                
+                processFrame();
+              }
+            })
+            .catch((error) => {
+              console.error('Error accessing camera:', error);
+              setError('Camera access denied or not available');
+            });
         } else {
-          setHandLandmarks([]);
+          setError('Camera API not available');
         }
-      });
-      
-      if (videoRef.current) {
-        // 使用navigator.mediaDevices获取摄像头
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then((stream) => {
-            if (videoRef.current) {
-              videoRef.current.srcObject = stream;
-              videoRef.current.play();
-              setIsCameraActive(true);
-              
-              // 手动处理帧
-              const processFrame = async () => {
-                if (hands.current && videoRef.current && !videoRef.current.paused && !videoRef.current.ended) {
-                  await hands.current.send({ image: videoRef.current });
-                }
-                requestAnimationFrame(processFrame);
-              };
-              
-              processFrame();
-            }
-          })
-          .catch((error) => {
-            console.error('Error accessing camera:', error);
-          });
+      } catch (err) {
+        console.error('Error initializing hands:', err);
+        setError('Error initializing gesture recognition');
+        setIsLoading(false);
       }
     };
     
@@ -163,7 +185,8 @@ const BlockCraft = () => {
         <div className="mr-6">Mode: {activeTool}</div>
         <div className="mr-6">Blocks: {blocks.length}</div>
         <div className="mr-6">Camera: {isCameraActive ? 'Active' : 'Inactive'}</div>
-        <div className="ml-auto">FPS: 60</div>
+        {error && <div className="ml-auto text-red-400">{error}</div>}
+        {isLoading && <div className="ml-auto text-yellow-400">Loading...</div>}
       </div>
       
       {/* 主内容区 */}
