@@ -270,14 +270,8 @@ const BlockCraft = () => {
         </div>
         
         {/* 3D工作区 */}
-        <div className="flex-1 relative">
-          <Canvas 
-            className="w-full h-full"
-            camera={{ position: [5, 5, 5] }}
-            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          >
-            <Scene3D blocks={blocks} selectedBlock={selectedBlock} />
-          </Canvas>
+        <div className="flex-1 relative bg-light-gray flex items-center justify-center">
+          <div className="text-primary text-lg">3D Scene (Temporarily Disabled)</div>
           
           {/* 手势识别指示器 */}
           {handLandmarks.length > 0 && (
