@@ -60,15 +60,11 @@ const AlgorithmicBackground: React.FC = () => {
       size: number;
     }[] = [];
 
-    // Get brand colors from CSS variables
-    const getBrandColor = (name: string) => {
-      return getComputedStyle(document.documentElement).getPropertyValue(name);
-    };
-
+    // Brand colors (hardcoded to avoid server-side rendering issues)
     const brandColors = {
-      orange: getBrandColor('--color-orange') || '#d97757',
-      blue: getBrandColor('--color-blue') || '#6a9bcc',
-      green: getBrandColor('--color-green') || '#788c5d'
+      orange: '#d97757', // --color-orange
+      blue: '#6a9bcc', // --color-blue
+      green: '#788c5d' // --color-green
     };
 
     // Initialize particles with brand colors
