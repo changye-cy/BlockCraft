@@ -32,14 +32,14 @@ const AlgorithmicBackground: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Algorithmic art parameters
+    // Algorithmic art parameters (optimized for performance)
     const params = {
       seed: 12345,
-      particleCount: 150,
+      particleCount: 50, // Reduced from 150 to 50
       noiseScale: 0.01,
       noiseSpeed: 0.0015,
       particleSize: 2,
-      trailLength: 60,
+      trailLength: 30, // Reduced from 60 to 30
       mouseInfluence: 50
     };
 
@@ -60,15 +60,11 @@ const AlgorithmicBackground: React.FC = () => {
       size: number;
     }[] = [];
 
-    // Get brand colors from CSS variables
-    const getBrandColor = (name: string) => {
-      return getComputedStyle(document.documentElement).getPropertyValue(name);
-    };
-
+    // Brand colors (hardcoded to avoid performance issues)
     const brandColors = {
-      orange: getBrandColor('--color-orange') || '#d97757',
-      blue: getBrandColor('--color-blue') || '#6a9bcc',
-      green: getBrandColor('--color-green') || '#788c5d'
+      orange: '#d97757', // --color-orange
+      blue: '#6a9bcc', // --color-blue
+      green: '#788c5d' // --color-green
     };
 
     // Initialize particles with brand colors
@@ -148,11 +144,16 @@ const AlgorithmicBackground: React.FC = () => {
       ctx.fillStyle = 'rgba(250, 249, 245, 0.1)'; // Using brand light color
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Calculate mouse influence once per frame
+      const mouseX = mousePosition.x;
+      const mouseY = mousePosition.y;
+
       particles.forEach(particle => {
         // Calculate distance to mouse
-        const dx = particle.x - mousePosition.x;
-        const dy = particle.y - mousePosition.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const dx = particle.x - mouseX;
+        const dy = particle.y - mouseY;
+        const distanceSquared = dx * dx + dy * dy;
+        const distance = Math.sqrt(distanceSquared);
 
         // Add mouse influence
         if (distance < params.mouseInfluence) {
@@ -184,36 +185,22 @@ const AlgorithmicBackground: React.FC = () => {
           particle.history.shift();
         }
 
-        // Draw particle trail with gradient
+        // Draw particle trail (simplified)
         if (particle.history.length > 1) {
-          const gradient = ctx.createLinearGradient(
-            particle.history[0].x, particle.history[0].y,
-            particle.history[particle.history.length - 1].x, particle.history[particle.history.length - 1].y
-          );
-          gradient.addColorStop(0, `${particle.color}00`); // Transparent at start
-          gradient.addColorStop(1, `${particle.color}FF`); // Opaque at end
-
           ctx.beginPath();
           ctx.moveTo(particle.history[0].x, particle.history[0].y);
           for (let i = 1; i < particle.history.length; i++) {
             ctx.lineTo(particle.history[i].x, particle.history[i].y);
           }
-          ctx.strokeStyle = gradient;
+          ctx.strokeStyle = particle.color;
           ctx.lineWidth = particle.size;
           ctx.stroke();
         }
 
-        // Draw particle head with pulsing effect
-        const pulse = 1 + Math.sin(frame * 0.05 + particle.x * 0.01) * 0.3;
+        // Draw particle head (simplified)
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size * 2 * pulse, 0, Math.PI * 2);
+        ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
         ctx.fillStyle = particle.color;
-        ctx.fill();
-
-        // Add subtle glow effect
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size * 4 * pulse, 0, Math.PI * 2);
-        ctx.fillStyle = `${particle.color}33`;
         ctx.fill();
       });
 
