@@ -4,6 +4,7 @@ import { useBlockCraftStore, Block } from '@/store/blockcraftStore';
 import GestureRecognition from '@/components/GestureRecognition';
 import Scene3D from '@/components/Scene3D';
 import Notification from '@/components/Notification';
+import AlgorithmicBackground from '@/components/AlgorithmicBackground';
 
 const BlockCraft = () => {
   // 从store获取状态
@@ -190,72 +191,81 @@ const BlockCraft = () => {
 
   
   return (
-    <div className="flex flex-col h-screen bg-slate-900 text-white">
+    <div className="flex flex-col h-screen bg-primary text-primary relative overflow-hidden">
+      {/* 算法艺术背景 */}
+      <AlgorithmicBackground />
+      
       {/* 顶部状态栏 */}
-      <div className="h-10 bg-slate-800 flex items-center px-4 text-sm">
-        <div className="mr-6">BlockCraft</div>
-        <div className="mr-6">Mode: {activeTool}</div>
-        <div className="mr-6">Blocks: {blocks.length}</div>
-        <div className="mr-6">FPS: {fps}</div>
-        <div className="mr-6">Camera: {isCameraActive ? 'Active' : 'Inactive'}</div>
-        {error && <div className="ml-auto text-red-400">{error}</div>}
-        {isLoading && <div className="ml-auto text-yellow-400">Loading...</div>}
+      <div className="h-10 bg-secondary/80 backdrop-blur-sm flex items-center px-4 text-sm z-10 overflow-x-auto">
+        <div className="mr-6 font-semibold text-primary whitespace-nowrap">BlockCraft</div>
+        <div className="mr-6 text-primary whitespace-nowrap">Mode: {activeTool}</div>
+        <div className="mr-6 text-primary whitespace-nowrap">Blocks: {blocks.length}</div>
+        <div className="mr-6 text-primary whitespace-nowrap">FPS: {fps}</div>
+        <div className="mr-6 text-primary whitespace-nowrap">Camera: {isCameraActive ? 'Active' : 'Inactive'}</div>
+        {error && <div className="ml-auto text-accent-orange whitespace-nowrap">{error}</div>}
+        {isLoading && <div className="ml-auto text-accent-blue whitespace-nowrap">Loading...</div>}
       </div>
       
       {/* 主内容区 */}
       <div className="flex flex-1 overflow-hidden">
         {/* 左侧工具栏 */}
-        <div className="w-20 bg-slate-800 flex flex-col items-center py-4 space-y-4">
+        <div className="w-20 md:w-24 bg-secondary/80 backdrop-blur-sm flex flex-col items-center py-4 space-y-4 z-10 transition-all duration-300">
           <button 
-            className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'select' ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'}`}
+            className={`w-16 h-16 md:w-20 md:h-20 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'select' ? 'bg-accent-blue text-primary' : 'bg-mid-gray/30 hover:bg-mid-gray/50 text-primary'}`}
             onClick={() => setActiveTool('select')}
+            title="Select"
           >
-            <span className="text-xl">👆</span>
-            <span className="text-xs mt-1">Select</span>
+            <span className="text-xl md:text-2xl">👆</span>
+            <span className="text-xs md:text-sm mt-1">Select</span>
           </button>
           <button 
-            className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'cube' ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'}`}
+            className={`w-16 h-16 md:w-20 md:h-20 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'cube' ? 'bg-accent-orange text-primary' : 'bg-mid-gray/30 hover:bg-mid-gray/50 text-primary'}`}
             onClick={() => {
               setActiveTool('cube');
               addBlock('cube');
             }}
+            title="Cube"
           >
-            <span className="text-xl">📦</span>
-            <span className="text-xs mt-1">Cube</span>
+            <span className="text-xl md:text-2xl">📦</span>
+            <span className="text-xs md:text-sm mt-1">Cube</span>
           </button>
           <button 
-            className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'sphere' ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'}`}
+            className={`w-16 h-16 md:w-20 md:h-20 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'sphere' ? 'bg-accent-green text-primary' : 'bg-mid-gray/30 hover:bg-mid-gray/50 text-primary'}`}
             onClick={() => {
               setActiveTool('sphere');
               addBlock('sphere');
             }}
+            title="Sphere"
           >
-            <span className="text-xl">🔵</span>
-            <span className="text-xs mt-1">Sphere</span>
+            <span className="text-xl md:text-2xl">🔵</span>
+            <span className="text-xs md:text-sm mt-1">Sphere</span>
           </button>
           <button 
-            className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'cylinder' ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'}`}
+            className={`w-16 h-16 md:w-20 md:h-20 rounded-lg flex flex-col items-center justify-center transition-all duration-200 transform hover:scale-105 ${activeTool === 'cylinder' ? 'bg-accent-blue text-primary' : 'bg-mid-gray/30 hover:bg-mid-gray/50 text-primary'}`}
             onClick={() => {
               setActiveTool('cylinder');
               addBlock('cylinder');
             }}
+            title="Cylinder"
           >
-            <span className="text-xl">🔷</span>
-            <span className="text-xs mt-1">Cylinder</span>
+            <span className="text-xl md:text-2xl">🔷</span>
+            <span className="text-xs md:text-sm mt-1">Cylinder</span>
           </button>
           <button 
-            className="w-16 h-16 rounded-lg flex flex-col items-center justify-center bg-slate-700 hover:bg-slate-600 transition-all duration-200 transform hover:scale-105"
+            className="w-16 h-16 md:w-20 md:h-20 rounded-lg flex flex-col items-center justify-center bg-mid-gray/30 hover:bg-mid-gray/50 text-primary transition-all duration-200 transform hover:scale-105"
             onClick={() => setShowSaveDialog(true)}
+            title="Save"
           >
-            <span className="text-xl">💾</span>
-            <span className="text-xs mt-1">Save</span>
+            <span className="text-xl md:text-2xl">💾</span>
+            <span className="text-xs md:text-sm mt-1">Save</span>
           </button>
           <button 
-            className="w-16 h-16 rounded-lg flex flex-col items-center justify-center bg-slate-700 hover:bg-slate-600 transition-all duration-200 transform hover:scale-105"
+            className="w-16 h-16 md:w-20 md:h-20 rounded-lg flex flex-col items-center justify-center bg-mid-gray/30 hover:bg-mid-gray/50 text-primary transition-all duration-200 transform hover:scale-105"
             onClick={() => setShowLoadDialog(true)}
+            title="Load"
           >
-            <span className="text-xl">📁</span>
-            <span className="text-xs mt-1">Load</span>
+            <span className="text-xl md:text-2xl">📁</span>
+            <span className="text-xs md:text-sm mt-1">Load</span>
           </button>
         </div>
         
@@ -271,20 +281,20 @@ const BlockCraft = () => {
           
           {/* 手势识别指示器 */}
           {handLandmarks.length > 0 && (
-            <div className="absolute top-4 left-4 bg-black bg-opacity-50 p-2 rounded">
-              <div className="text-sm">Hand Detected</div>
+            <div className="absolute top-4 left-4 bg-secondary/80 backdrop-blur-sm p-2 rounded border border-mid-gray/50 shadow-md">
+              <div className="text-sm text-primary">Hand Detected</div>
             </div>
           )}
         </div>
         
-        {/* 右侧属性面板 */}
-        <div className="w-64 bg-slate-800 p-4 overflow-y-auto">
-          <h3 className="text-lg font-medium mb-4">Properties</h3>
+        {/* 右侧属性面板 - 响应式 */}
+        <div className="w-64 bg-secondary/80 backdrop-blur-sm p-4 overflow-y-auto z-10 transition-all duration-300 md:transition-none">
+          <h3 className="text-lg font-medium mb-4 text-primary">Properties</h3>
           
           {selectedBlock ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Color</label>
+                <label className="block text-sm mb-1 text-primary">Color</label>
                 <input 
                   type="color" 
                   value={color} 
@@ -294,16 +304,16 @@ const BlockCraft = () => {
                       updateBlock(selectedBlock, { color: e.target.value });
                     }
                   }}
-                  className="w-full h-8 rounded"
+                  className="w-full h-8 rounded transition-all duration-200 transform hover:scale-105 border border-mid-gray/50"
                 />
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Position</label>
+                <label className="block text-sm mb-1 text-primary">Position</label>
                 {blocks.find(b => b.id === selectedBlock) && (
                   <div className="space-y-2">
                     <div>
-                      <label className="text-xs">X</label>
+                      <label className="text-xs text-primary">X</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.position.x || 0}
@@ -313,11 +323,11 @@ const BlockCraft = () => {
                             x: parseFloat(e.target.value) || 0
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                     <div>
-                      <label className="text-xs">Y</label>
+                      <label className="text-xs text-primary">Y</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.position.y || 0}
@@ -327,11 +337,11 @@ const BlockCraft = () => {
                             y: parseFloat(e.target.value) || 0
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                     <div>
-                      <label className="text-xs">Z</label>
+                      <label className="text-xs text-primary">Z</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.position.z || 0}
@@ -341,7 +351,7 @@ const BlockCraft = () => {
                             z: parseFloat(e.target.value) || 0
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                   </div>
@@ -349,11 +359,11 @@ const BlockCraft = () => {
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Rotation</label>
+                <label className="block text-sm mb-1 text-primary">Rotation</label>
                 {blocks.find(b => b.id === selectedBlock) && (
                   <div className="space-y-2">
                     <div>
-                      <label className="text-xs">X</label>
+                      <label className="text-xs text-primary">X</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.rotation.x || 0}
@@ -363,11 +373,11 @@ const BlockCraft = () => {
                             x: parseFloat(e.target.value) || 0
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                     <div>
-                      <label className="text-xs">Y</label>
+                      <label className="text-xs text-primary">Y</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.rotation.y || 0}
@@ -377,11 +387,11 @@ const BlockCraft = () => {
                             y: parseFloat(e.target.value) || 0
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                     <div>
-                      <label className="text-xs">Z</label>
+                      <label className="text-xs text-primary">Z</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.rotation.z || 0}
@@ -391,7 +401,7 @@ const BlockCraft = () => {
                             z: parseFloat(e.target.value) || 0
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                   </div>
@@ -399,11 +409,11 @@ const BlockCraft = () => {
               </div>
               
               <div>
-                <label className="block text-sm mb-1">Scale</label>
+                <label className="block text-sm mb-1 text-primary">Scale</label>
                 {blocks.find(b => b.id === selectedBlock) && (
                   <div className="space-y-2">
                     <div>
-                      <label className="text-xs">X</label>
+                      <label className="text-xs text-primary">X</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.scale.x || 1}
@@ -413,11 +423,11 @@ const BlockCraft = () => {
                             x: parseFloat(e.target.value) || 1
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                     <div>
-                      <label className="text-xs">Y</label>
+                      <label className="text-xs text-primary">Y</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.scale.y || 1}
@@ -427,11 +437,11 @@ const BlockCraft = () => {
                             y: parseFloat(e.target.value) || 1
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                     <div>
-                      <label className="text-xs">Z</label>
+                      <label className="text-xs text-primary">Z</label>
                       <input 
                         type="number" 
                         value={blocks.find(b => b.id === selectedBlock)?.scale.z || 1}
@@ -441,7 +451,7 @@ const BlockCraft = () => {
                             z: parseFloat(e.target.value) || 1
                           }
                         })}
-                        className="w-full bg-slate-700 text-white p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-light-gray text-primary p-1 rounded text-sm transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                       />
                     </div>
                   </div>
@@ -449,7 +459,7 @@ const BlockCraft = () => {
               </div>
               
               <button 
-                className="w-full bg-red-600 hover:bg-red-700 py-2 rounded text-sm transition-all duration-200 transform hover:scale-95"
+                className="w-full bg-accent-orange text-primary hover:bg-accent-orange/80 py-2 rounded text-sm transition-all duration-200 transform hover:scale-95"
                 onClick={() => {
                   if (selectedBlock) {
                     deleteBlock(selectedBlock);
@@ -462,39 +472,41 @@ const BlockCraft = () => {
               </button>
             </div>
           ) : (
-            <div className="text-slate-400 text-sm">Select a block to edit</div>
+            <div className="text-mid-gray text-sm">Select a block to edit</div>
           )}
         </div>
       </div>
       
-      {/* 底部视频捕捉区域 */}
-      <div className="h-48 bg-slate-800 flex items-center justify-end p-4">
-        <GestureRecognition
-          onHandLandmarks={handleHandLandmarks}
-          onError={setError}
-          onCameraActive={setIsCameraActive}
-        />
+      {/* 底部视频捕捉区域 - 响应式 */}
+      <div className="h-48 md:h-56 bg-secondary/80 backdrop-blur-sm flex items-center justify-end p-4 z-10 transition-all duration-300">
+        <div className="rounded-lg overflow-hidden border-2 border-accent-blue/50 shadow-lg shadow-accent-blue/20 transform transition-all duration-300 hover:scale-105">
+          <GestureRecognition
+            onHandLandmarks={handleHandLandmarks}
+            onError={setError}
+            onCameraActive={setIsCameraActive}
+          />
+        </div>
       </div>
       
       {/* 保存对话框 */}
       {showSaveDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
-          <div className="bg-slate-800 p-6 rounded-lg w-80 transform transition-transform duration-300 ease-in-out scale-100 opacity-100">
-            <h3 className="text-lg font-medium mb-4">Save Scene</h3>
+        <div className="fixed inset-0 bg-dark/50 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+          <div className="bg-secondary/90 backdrop-blur-sm p-6 rounded-lg w-80 transform transition-transform duration-300 ease-in-out scale-100 opacity-100 border border-mid-gray/30 shadow-xl">
+            <h3 className="text-lg font-medium mb-4 text-primary">Save Scene</h3>
             <div className="mb-4">
-              <label className="block text-sm mb-1">Scene Name</label>
+              <label className="block text-sm mb-1 text-primary">Scene Name</label>
               <input 
                 type="text" 
                 value={sceneName} 
                 onChange={(e) => setSceneName(e.target.value)}
-                className="w-full bg-slate-700 text-white p-2 rounded transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-light-gray text-primary p-2 rounded transition-all duration-200 focus:ring-2 focus:ring-accent-blue border border-mid-gray/30"
                 placeholder="Enter scene name"
                 autoFocus
               />
             </div>
             <div className="flex space-x-2">
               <button 
-                className="flex-1 bg-blue-600 hover:bg-blue-700 py-2 rounded transition-all duration-200 transform hover:scale-95"
+                className="flex-1 bg-accent-blue text-primary hover:bg-accent-blue/80 py-2 rounded transition-all duration-200 transform hover:scale-95"
                 onClick={() => {
                   if (sceneName) {
                     saveScene(sceneName);
@@ -511,7 +523,7 @@ const BlockCraft = () => {
                 Save
               </button>
               <button 
-                className="flex-1 bg-slate-600 hover:bg-slate-500 py-2 rounded transition-all duration-200 transform hover:scale-95"
+                className="flex-1 bg-mid-gray/50 text-primary hover:bg-mid-gray/70 py-2 rounded transition-all duration-200 transform hover:scale-95"
                 onClick={() => {
                   setShowSaveDialog(false);
                   setSceneName('');
@@ -526,24 +538,24 @@ const BlockCraft = () => {
       
       {/* 加载对话框 */}
       {showLoadDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
-          <div className="bg-slate-800 p-6 rounded-lg w-80 max-h-[80vh] overflow-y-auto transform transition-transform duration-300 ease-in-out scale-100 opacity-100">
-            <h3 className="text-lg font-medium mb-4">Load Scene</h3>
+        <div className="fixed inset-0 bg-dark/50 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+          <div className="bg-secondary/90 backdrop-blur-sm p-6 rounded-lg w-80 max-h-[80vh] overflow-y-auto transform transition-transform duration-300 ease-in-out scale-100 opacity-100 border border-mid-gray/30 shadow-xl">
+            <h3 className="text-lg font-medium mb-4 text-primary">Load Scene</h3>
             {scenes.length === 0 ? (
-              <div className="text-slate-400 text-sm mb-4">No saved scenes</div>
+              <div className="text-mid-gray text-sm mb-4">No saved scenes</div>
             ) : (
               <div className="space-y-2 mb-4">
                 {scenes.map((scene) => (
-                  <div key={scene.id} className="flex items-center justify-between p-2 bg-slate-700 rounded transition-all duration-200 hover:bg-slate-600">
+                  <div key={scene.id} className="flex items-center justify-between p-2 bg-light-gray rounded transition-all duration-200 hover:bg-mid-gray/30 border border-mid-gray/30">
                     <div>
-                      <div className="text-sm font-medium">{scene.name}</div>
-                      <div className="text-xs text-slate-400">
+                      <div className="text-sm font-medium text-primary">{scene.name}</div>
+                      <div className="text-xs text-mid-gray">
                         {new Date(scene.updatedAt).toLocaleString()}
                       </div>
                     </div>
                     <div className="space-x-2">
                       <button 
-                        className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                        className="text-accent-blue hover:text-accent-blue/80 transition-colors duration-200"
                         onClick={() => {
                           loadScene(scene.id);
                           setShowLoadDialog(false);
@@ -554,7 +566,7 @@ const BlockCraft = () => {
                         Load
                       </button>
                       <button 
-                        className="text-red-400 hover:text-red-300 transition-colors duration-200"
+                        className="text-accent-orange hover:text-accent-orange/80 transition-colors duration-200"
                         onClick={() => {
                           deleteScene(scene.id);
                           setNotification({ message: 'Scene deleted successfully', type: 'success' });
@@ -569,7 +581,7 @@ const BlockCraft = () => {
               </div>
             )}
             <button 
-              className="w-full bg-slate-600 hover:bg-slate-500 py-2 rounded transition-all duration-200 transform hover:scale-95"
+              className="w-full bg-mid-gray/50 text-primary hover:bg-mid-gray/70 py-2 rounded transition-all duration-200 transform hover:scale-95"
               onClick={() => setShowLoadDialog(false)}
             >
               Cancel
