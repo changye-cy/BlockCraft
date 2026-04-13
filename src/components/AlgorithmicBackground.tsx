@@ -32,14 +32,14 @@ const AlgorithmicBackground: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Algorithmic art parameters (optimized for performance)
+    // Algorithmic art parameters (highly optimized for performance)
     const params = {
       seed: 12345,
-      particleCount: 50, // Reduced from 150 to 50
+      particleCount: 20, // Further reduced from 50 to 20
       noiseScale: 0.01,
       noiseSpeed: 0.0015,
-      particleSize: 2,
-      trailLength: 30, // Reduced from 60 to 30
+      particleSize: 1, // Reduced from 2 to 1
+      trailLength: 10, // Further reduced from 30 to 10
       mouseInfluence: 50
     };
 
@@ -138,8 +138,17 @@ const AlgorithmicBackground: React.FC = () => {
     };
 
     let frame = 0;
+    let lastAnimationTime = 0;
+    const animationInterval = 16; // ~60fps
 
-    const animate = () => {
+    const animate = (timestamp: number) => {
+      // Throttle animation to ~60fps
+      if (timestamp - lastAnimationTime < animationInterval) {
+        requestAnimationFrame(animate);
+        return;
+      }
+      lastAnimationTime = timestamp;
+
       // Clear canvas with semi-transparent background to create trails
       ctx.fillStyle = 'rgba(250, 249, 245, 0.1)'; // Using brand light color
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -152,8 +161,7 @@ const AlgorithmicBackground: React.FC = () => {
         // Calculate distance to mouse
         const dx = particle.x - mouseX;
         const dy = particle.y - mouseY;
-        const distanceSquared = dx * dx + dy * dy;
-        const distance = Math.sqrt(distanceSquared);
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
         // Add mouse influence
         if (distance < params.mouseInfluence) {
@@ -185,21 +193,9 @@ const AlgorithmicBackground: React.FC = () => {
           particle.history.shift();
         }
 
-        // Draw particle trail (simplified)
-        if (particle.history.length > 1) {
-          ctx.beginPath();
-          ctx.moveTo(particle.history[0].x, particle.history[0].y);
-          for (let i = 1; i < particle.history.length; i++) {
-            ctx.lineTo(particle.history[i].x, particle.history[i].y);
-          }
-          ctx.strokeStyle = particle.color;
-          ctx.lineWidth = particle.size;
-          ctx.stroke();
-        }
-
-        // Draw particle head (simplified)
+        // Draw particle head only (simplified further)
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fillStyle = particle.color;
         ctx.fill();
       });
@@ -208,7 +204,7 @@ const AlgorithmicBackground: React.FC = () => {
       requestAnimationFrame(animate);
     };
 
-    animate();
+    requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
